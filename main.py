@@ -3,6 +3,7 @@ import json
 import pandas as pd
 from datetime import datetime
 import getpass
+import os
 
 
 cn=input("Customer name: ")
@@ -46,6 +47,9 @@ else:
     print("Error: The application doesn't exist")
     exit()
 
+directory = "Reports"
+if not os.path.exists(directory):
+    os.makedirs(directory)
 # Define the headers
 headers = [
     "id", "name", "deploymentStatus", "hstsEnabled", "http2Enabled", "ssrfEnabled", "awBypassEnabled", "workflowName",
@@ -154,7 +158,9 @@ for app in data.get("content", []):
 
 # Create DataFrame and save to Excel
 df = pd.DataFrame(rows, columns=headers)
-output_file = f"CW_ConfigMapper_{cn}.xlsx"
+output_dir = "Reports"
+os.makedirs(output_dir, exist_ok=True)
+output_file = os.path.join(output_dir, f"CW_ConfigMapper_{cn}.xlsx")
 df.to_excel(output_file, index=False)
 
 print(f"Excel file created: {output_file}")
